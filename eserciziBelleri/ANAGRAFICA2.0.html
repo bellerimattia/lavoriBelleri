@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anagrafica Utente</title>
+<style>
+body { font-family: Arial, sans-serif; background-color: #f7f8fc; margin:0; padding:0; }
+.container { width: 60%; max-width:800px; margin:30px auto; background:white; padding:25px; border-radius:15px; box-shadow:0 0 10px rgba(0,0,0,0.1); }
+h1 { text-align:center; color:#333; }
+form { display:flex; flex-direction:column; gap:20px; }
+fieldset { border:1px solid #ccc; border-radius:10px; padding:15px; }
+legend { font-weight:bold; color:#444; }
+label { display:block; margin:8px 0; }
+input[type="text"], input[type="number"], input[type="date"], select { width:100%; padding:8px; border:1px solid #aaa; border-radius:6px; }
+button { background-color:#3a7bd5; color:white; border:none; padding:12px; border-radius:8px; font-size:16px; cursor:pointer; transition: background-color 0.2s ease; }
+button:hover { background-color:#2f5fa3; }
+#risultato { margin-top:15px; text-align:center; font-weight:bold; color:#2f5fa3; }
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Anagrafica Utente</h1>
+<form id="anagraficaForm">
+<fieldset>
+<legend>Dati Personali</legend>
+<label>Nome:</label>
+<input type="text" id="nome" required>
+<label>Cognome:</label>
+<input type="text" id="cognome" required>
+<label>Indirizzo:</label>
+<input type="text" id="indirizzo">
+<label>Città:</label>
+<input type="text" id="citta">
+<label>CAP:</label>
+<input type="number" id="cap" min="10000" max="99999">
+<label>Età:</label>
+<input type="number" id="eta" min="0" max="120">
+<label>Data di nascita:</label>
+<input type="date" id="dataNascita" required>
+</fieldset>
+
+<fieldset>
+<legend>Sesso</legend>
+<label><input type="radio" name="sesso" value="Maschio"> Maschio</label>
+<label><input type="radio" name="sesso" value="Femmina"> Femmina</label>
+<label><input type="radio" name="sesso" value="Altro"> Altro</label>
+</fieldset>
+
+<fieldset>
+<legend>Provincia</legend>
+<select id="provincia">
+<option value="">-- Seleziona la provincia --</option>
+<option value="MI">Milano</option>
+<option value="RM">Roma</option>
+<option value="TO">Torino</option>
+<option value="NA">Napoli</option>
+<option value="FI">Firenze</option>
+<option value="VE">Venezia</option>
+<option value="BA">Bari</option>
+</select>
+</fieldset>
+
+<fieldset>
+<legend>Mezzi di locomozione posseduti in famiglia</legend>
+<label><input type="checkbox" name="mezzi" value="Auto"> Auto</label>
+<label><input type="checkbox" name="mezzi" value="Moto"> Moto</label>
+<label><input type="checkbox" name="mezzi" value="Bici"> Bici</label>
+<label><input type="checkbox" name="mezzi" value="Aereo"> Aereo</label>
+<label><input type="checkbox" name="mezzi" value="Yacht"> Yacht</label>
+</fieldset>
+
+<fieldset>
+<legend>Materie preferite (max 3)</legend>
+<select id="materie" multiple size="9">
+<option value="Matematica">Matematica</option>
+<option value="Italiano">Italiano</option>
+<option value="Inglese">Inglese</option>
+<option value="Storia">Storia</option>
+<option value="Geografia">Geografia</option>
+<option value="Informatica">Informatica</option>
+<option value="Scienze">Scienze</option>
+<option value="Arte">Arte</option>
+<option value="Musica">Musica</option>
+</select>
+</fieldset>
+
+<button type="submit">Invia</button>
+<div id="risultato"></div>
+</form>
+</div>
+
+<script>
+var form = document.getElementById("anagraficaForm");
+var materieSelect = document.getElementById("materie");
+var risultato = document.getElementById("risultato");
+
+materieSelect.onchange = function() {
+  var count = 0;
+  for (var i=0;i<materieSelect.options.length;i++){
+    if(materieSelect.options[i].selected) count++;
+  }
+  if(count>3){
+    alert("Puoi selezionare al massimo 3 materie.");
+    materieSelect.options[materieSelect.selectedIndex].selected=false;
+  }
+}
+
+form.onsubmit = function(event){
+  event.preventDefault();
+
+  var nome = document.getElementById("nome").value;
+  var cognome = document.getElementById("cognome").value;
+  var data = document.getElementById("dataNascita").value;
+  if(data==""){ alert("Inserisci la data di nascita!"); return; }
+
+  var anno = new Date(data).getFullYear();
+  var generazione="";
+  if(anno>=1901 && anno<=1927) generazione="Greatest Generation";
+  else if(anno>=1928 && anno<=1945) generazione="Generazione Silenziosa";
+  else if(anno>=1946 && anno<=1964) generazione="Baby Boomers";
+  else if(anno>=1965 && anno<=1980) generazione="Generazione X";
+  else if(anno>=1981 && anno<=1996) generazione="Millennials";
+  else if(anno>=1997 && anno<=2012) generazione="Generazione Z";
+  else if(anno>=2013) generazione="Generazione Alpha";
+  else generazione="Anno non valido";
+
+  var sessoElems=document.getElementsByName("sesso");
+  var sesso="";
+  for(var i=0;i<sessoElems.length;i++){
+    if(sessoElems[i].checked){ sesso=sessoElems[i].value; break; }
+  }
+
+  var mezziElems=document.getElementsByName("mezzi");
+  var mezziArray=[];
+  for(var i=0;i<mezziElems.length;i++){
+    if(mezziElems[i].checked) mezziArray.push(mezziElems[i].value);
+  }
+
+  var materieArray=[];
+  for(var i=0;i<materieSelect.options.length;i++){
+    if(materieSelect.options[i].selected) materieArray.push(materieSelect.options[i].value);
+  }
+
+  var provincia=document.getElementById("provincia").value;
+
+  risultato.innerHTML=
+  "Ciao "+nome+" "+cognome+"!<br>"+
+  "Sesso: "+(sesso||"non selezionato")+"<br>"+
+  "Provincia: "+(provincia||"non selezionata")+"<br>"+
+  "Appartieni alla <strong>"+generazione+"</strong>.<br>"+
+  "Mezzi posseduti: "+(mezziArray.length>0?mezziArray.join(", "):"nessuno")+"<br>"+
+  "Materie preferite: "+(materieArray.length>0?materieArray.join(", "):"nessuna");
+}
+</script>
+</body>
+</html>
