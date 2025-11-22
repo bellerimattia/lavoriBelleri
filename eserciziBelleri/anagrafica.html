@@ -1,146 +1,103 @@
 <!DOCTYPE html>
 <html lang="it">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form di Contatto</title>
-    <style>
-        /* Stile generale della pagina */
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background-color: #f4f6f8;
-            color: #333;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        /* Contenitore del form */
-        form {
-            background-color: #ffffff;
-            padding: 30px 40px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 450px;
-        }
-
-        label {
-            font-weight: bold;
-            margin-bottom: 5px;
-            display: block;
-        }
-
-        input[type="text"],
-        input[type="number"],
-        input[type="submit"],
-        button {
-            width: 100%;
-            padding: 10px 12px;
-            margin-bottom: 15px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            font-size: 16px;
-            box-sizing: border-box;
-        }
-
-        input[type="submit"],
-        button {
-            background-color: #0077cc;
-            color: white;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        input[type="submit"]:hover,
-        button:hover {
-            background-color: #005fa3;
-        }
-
-        p#risultato {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #e0f0ff;
-            border-left: 5px solid #0077cc;
-            border-radius: 6px;
-            font-weight: bold;
-        }
-
-        /* Responsive */
-        @media (max-width: 500px) {
-            form {
-                padding: 20px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Registrazione dati</title>
+  <link rel="stylesheet" href="stile.css">
 </head>
-
 <body>
+  <div class="card">
+    <div class="form-area">
+      <h2>Inserisci i tuoi dati</h2>
+      <div class="input-grid">
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome">
 
-    <form action="#" method="POST">
-        <label for="nome">Nome:</label><br>
-        <input type="text" id="nome" name="nome" required><br><br>
+        <label for="cognome">Cognome:</label>
+        <input type="text" id="cognome">
 
-        <label for="cognome">Cognome:</label><br>
-        <input type="text" id="cognome" name="cognome" required><br><br>
+        <label for="indirizzo">Indirizzo:</label>
+        <input type="text" id="indirizzo">
 
-        <label for="indirizzo">Indirizzo:</label><br>
-        <input type="text" id="indirizzo" name="indirizzo" required><br><br>
+        <label for="citta">Città:</label>
+        <input type="text" id="citta">
 
-        <label for="cap">CAP:</label><br>
-        <input type="number" id="cap" name="cap" pattern="[0-9]{5}" title="Inserisci un CAP valido (5 cifre)" required><br><br>
+        <label for="cap">CAP:</label>
+        <input type="text" id="cap">
 
-        <label for="citta">Città:</label><br>
-        <input type="text" id="citta" name="citta" required><br><br>
+        <label for="anno">Anno di nascita:</label>
+        <input type="number" id="anno" min="1900" max="2025">
 
-        <label for="eta">Età (Anno di nascita):</label><br>
-        <input type="number" id="et" name="eta" required><br><br>
+        <div class="actions">
+          <button onclick="stampaDati()">Invia</button>
+        </div>
+      </div>
+    </div>
 
-        <input type="submit" onclick="myFunction()">
-    </form>
+    <div id="output"></div>
+  </div>
 
-    <script>
-        function myFunction() {
-            let nomePersona = document.getElementById("nome").value;
-            let cognomePersona = document.getElementById("cognome").value;
-            let viaUtente = document.getElementById("indirizzo").value;
-            let codicePostale = parseInt(document.getElementById("cap").value);
-            let localita = document.getElementById("citta").value;
-            let anno = parseInt(document.getElementById("et").value);
+  <script>
+    function stampaDati() {
+      const nome = document.getElementById("nome").value.trim();
+      const cognome = document.getElementById("cognome").value.trim();
+      const indirizzo = document.getElementById("indirizzo").value.trim();
+      const citta = document.getElementById("citta").value.trim();
+      const cap = document.getElementById("cap").value.trim();
+      const anno = parseInt(document.getElementById("anno").value.trim());
 
-            switch (true) {
-                case (anno >= 1901 && anno <= 1927):
-                    document.write("L'utente " + nomePersona + " " + cognomePersona + " nato nel " + anno + ", residente a " + localita + " (" + codicePostale + ") in via " + viaUtente + " fa parte della Greatest Generation");
-                    break;
-                case (anno >= 1928 && anno <= 1945):
-                    document.write("L'utente " + nomePersona + " " + cognomePersona + " nato nel " + anno + ", residente a " + localita + " (" + codicePostale + ") in via " + viaUtente + " fa parte della Generazione Silenziosa");
-                    break;
-                case (anno >= 1946 && anno <= 1964):
-                    document.write("L'utente " + nomePersona + " " + cognomePersona + " nato nel " + anno + ", residente a " + localita + " (" + codicePostale + ") in via " + viaUtente + " fa parte dei Baby Boomers");
-                    break;
-                case (anno >= 1965 && anno <= 1980):
-                    document.write("L'utente " + nomePersona + " " + cognomePersona + " nato nel " + anno + ", residente a " + localita + " (" + codicePostale + ") in via " + viaUtente + " fa parte della Generazione X");
-                    break;
-                case (anno >= 1981 && anno <= 1996):
-                    document.write("L'utente " + nomePersona + " " + cognomePersona + " nato nel " + anno + ", residente a " + localita + " (" + codicePostale + ") in via " + viaUtente + " fa parte dei Millenials");
-                    break;
-                case (anno >= 1997 && anno <= 2012):
-                    document.write("L'utente " + nomePersona + " " + cognomePersona + " nato nel " + anno + ", residente a " + localita + " (" + codicePostale + ") in via " + viaUtente + " fa parte della Generazione Z");
-                    break;
-                case (anno >= 2013):
-                    document.write("L'utente " + nomePersona + " " + cognomePersona + " nato nel " + anno + ", residente a " + localita + " (" + codicePostale + ") in via " + viaUtente + " fa parte della Generazione Alpha");
-                    break;
-                default:
-                    document.write("L'anno di nascita inserito non è valido o troppo lontano.");
-            }
-        }
-    </script>
+      // Controllo campi minimi
+      if (!nome || !cognome || isNaN(anno)) {
+        alert("Compila almeno Nome, Cognome e Anno di nascita!");
+        return;
+      }
 
+      // Calcolo generazione
+      let gen = "";
+      switch (true) {
+        case (anno >= 1901 && anno <= 1927):
+          gen = "Greatest Generation";
+          break;
+        case (anno >= 1928 && anno <= 1945):
+          gen = "Generazione Silenziosa";
+          break;
+        case (anno >= 1946 && anno <= 1964):
+          gen = "Baby Boomers";
+          break;
+        case (anno >= 1965 && anno <= 1980):
+          gen = "Generazione X";
+          break;
+        case (anno >= 1981 && anno <= 1996):
+          gen = "Millennials";
+          break;
+        case (anno >= 1997 && anno <= 2012):
+          gen = "Generazione Z";
+          break;
+        case (anno >= 2013):
+          gen = "Generazione Alpha";
+          break;
+        default:
+          gen = "Anno non valido o troppo lontano nel tempo";
+      }
+
+      // Calcolo età approssimata
+      const annoCorrente = new Date().getFullYear();
+      const eta = annoCorrente - anno;
+
+      // Stampa risultati
+      const outputDiv = document.getElementById("output");
+      outputDiv.style.display = "block";
+      outputDiv.innerHTML = `
+        <div><strong>Nome:</strong> ${nome}</div>
+        <div><strong>Cognome:</strong> ${cognome}</div>
+        <div><strong>Indirizzo:</strong> ${indirizzo}</div>
+        <div><strong>Città:</strong> ${citta}</div>
+        <div><strong>CAP:</strong> ${cap}</div>
+        <div><strong>Anno di nascita:</strong> ${anno}</div>
+        <div><strong>Età:</strong> ${eta} anni</div>
+        <div><strong>Generazione:</strong> ${gen}</div>
+      `;
+    }
+  </script>
 </body>
-
 </html>
