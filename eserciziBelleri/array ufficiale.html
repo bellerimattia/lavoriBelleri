@@ -1,0 +1,63 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Numeri Casuali</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+<h1>Numeri Casuali</h1>
+
+<div id="array"></div>
+<p id="media"></p>
+<p id="max"></p>
+<p id="min"></p>
+
+<h2>Numeri > 50</h2>
+<div id="over50"></div>
+
+<script>
+let numeri = [];
+for (let i = 0; i < 100; i++) {
+  numeri[i] = Math.random() * 201 - 100;
+}
+
+let somma = 0;
+for (let i = 0; i < numeri.length; i++) {
+  somma = somma + numeri[i];
+}
+let media = somma / numeri.length;
+
+let max = numeri[0];
+let min = numeri[0];
+for (let i = 1; i < numeri.length; i++) {
+  if (numeri[i] > max) max = numeri[i];
+  if (numeri[i] < min) min = numeri[i];
+}
+
+let maggiori50 = [];
+for (let i = 0; i < numeri.length; i++) {
+  if (numeri[i] > 50) maggiori50[maggiori50.length] = numeri[i];
+}
+
+let output = "<table><tr><th>Indice</th><th>Valore</th></tr>";
+for (let i = 0; i < numeri.length; i++) {
+  output = output + "<tr><td>" + i + "</td><td>" + numeri[i] + "</td></tr>";
+}
+output = output + "</table>";
+document.getElementById("array").innerHTML = output;
+
+document.getElementById("media").textContent = "Media: " + media;
+document.getElementById("max").textContent = "Massimo: " + max;
+document.getElementById("min").textContent = "Minimo: " + min;
+
+let out2 = "<table><tr><th>Valori > 50</th></tr>";
+for (let i = 0; i < maggiori50.length; i++) {
+  out2 = out2 + "<tr><td>" + maggiori50[i] + "</td></tr>";
+}
+out2 = out2 + "</table>";
+document.getElementById("over50").innerHTML = out2;
+</script>
+
+</body>
+</html>
