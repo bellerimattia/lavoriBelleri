@@ -1,119 +1,97 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <title>Anagrafica 3.0 – Codice Unico</title>
+<meta charset="UTF-8">
+<title>Anagrafica 3.0</title>
 
-    <style>
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background: #f2f4f7;
-            padding: 30px;
-        }
+<style>
+body {
+    font-family: Arial;
+    background-color: #eee;
+    padding: 20px;
+}
 
-        h1 {
-            margin-bottom: 20px;
-        }
+table {
+    border-collapse: collapse;
+    margin-top: 20px;
+}
 
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        table {
-            border-collapse: collapse;
-            margin-top: 20px;
-            background: white;
-        }
-
-        th, td {
-            border: 1px solid #333;
-            padding: 8px 12px;
-            text-align: center;
-        }
-
-        th {
-            background: #ddd;
-        }
-    </style>
+th, td {
+    border: 1px solid black;
+    padding: 6px;
+}
+</style>
 </head>
+
 <body>
 
-<h1 id="titolo"></h1>
+<h2 id="titolo"></h2>
 
 <div id="mittente">
-    <p>Invio dati anagrafici tramite <strong>localStorage</strong> e indici via <strong>URL</strong>.</p>
-    <button onclick="inviaDati()">Invia persone</button>
+    <button onclick="invia()">Invia persone</button>
 </div>
 
-<div id="destinatario" style="display:none;">
+<div id="destinatario" style="display:none">
     <table>
-        <thead>
-            <tr>
-                <th>Indice</th>
-                <th>Nome</th>
-                <th>Cognome</th>
-                <th>Età</th>
-            </tr>
-        </thead>
+        <tr>
+            <th>Indice</th>
+            <th>Nome</th>
+            <th>Cognome</th>
+            <th>Età</th>
+        </tr>
         <tbody id="tabella"></tbody>
     </table>
 </div>
 
 <script>
-    const params = new URLSearchParams(window.location.search);
-    const indiciURL = params.get("indici");
+let parametri = new URLSearchParams(window.location.search);
+let indici = parametri.get("indici");
 
-    // SE NON CI SONO PARAMETRI → MITTENTE
-    if (!indiciURL) {
-        document.getElementById("titolo").innerText = "Pagina Mittente";
+if (indici == null) {
 
-        function inviaDati() {
+    document.getElementById("titolo").innerHTML = "Pagina Mittente";
 
-            const persone = [
-                { nome: "Gino", cognome: "Latilla", eta: 32 },
-                { nome: "Pino", cognome: "Rossi", eta: 42 }
-            ];
+    function invia() {
 
-            // salvataggio localStorage
-            localStorage.setItem("persone", JSON.stringify(persone));
+        let persone = [
+            { nome: "Gino", cognome: "Latilla", eta: 32 },
+            { nome: "Pino", cognome: "Rossi", eta: 42 }
+        ];
 
-            // creazione indici 01, 02
-            let indici = [];
-            for (let i = 0; i < persone.length; i++) {
-                indici.push(String(i + 1).padStart(2, "0"));
-            }
+        localStorage.setItem("persone", JSON.stringify(persone));
 
-            // ricarico la stessa pagina con parametri
-            window.location.href = "anagrafica3_unico.html?indici=" + indici.join(",");
-        }
-    }
-
-    // SE CI SONO PARAMETRI → DESTINATARIO
-    else {
-        document.getElementById("titolo").innerText = "Pagina Destinatario";
-        document.getElementById("mittente").style.display = "none";
-        document.getElementById("destinatario").style.display = "block";
-
-        const persone = JSON.parse(localStorage.getItem("persone")) || [];
-        const indici = indiciURL.split(",");
-
-        const tbody = document.getElementById("tabella");
-
+        let listaIndici = "";
         for (let i = 0; i < persone.length; i++) {
-            const tr = document.createElement("tr");
-
-            tr.innerHTML = `
-                <td>${indici[i]}</td>
-                <td>${persone[i].nome}</td>
-                <td>${persone[i].cognome}</td>
-                <td>${persone[i].eta}</td>
-            `;
-
-            tbody.appendChild(tr);
+            listaIndici += (i + 1).toString().padStart(2, "0") + ",";
         }
+
+        listaIndici = listaIndici.slice(0, -1);
+
+        // ricarica la STESSA pagina con parametri
+        window.location.search = "?indici=" + listaIndici;
     }
+
+} else {
+
+    document.getElementById("titolo").innerHTML = "Pagina Destinatario";
+    document.getElementById("mittente").style.display = "none";
+    document.getElementById("destinatario").style.display = "block";
+
+    let persone = JSON.parse(localStorage.getItem("persone"));
+    let arrayIndici = indici.split(",");
+
+    let tabella = document.getElementById("tabella");
+
+    for (let i = 0; i < persone.length; i++) {
+        tabella.innerHTML +=
+            "<tr>" +
+            "<td>" + arrayIndici[i] + "</td>" +
+            "<td>" + persone[i].nome + "</td>" +
+            "<td>" + persone[i].cognome + "</td>" +
+            "<td>" + persone[i].eta + "</td>" +
+            "</tr>";
+    }
+}
 </script>
 
 </body>
