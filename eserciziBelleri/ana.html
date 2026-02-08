@@ -12,8 +12,8 @@ body {
 }
 
 input, button {
-    margin-top: 5px;
     display: block;
+    margin-top: 8px;
 }
 
 table {
@@ -34,7 +34,16 @@ th, td {
 
 <!-- ===== MITTENTE ===== -->
 <div id="mittente">
-    <p>Inserimento multiplo (Anagrafica 3)</p>
+    <label>Nome</label>
+    <input type="text" id="nome">
+
+    <label>Cognome</label>
+    <input type="text" id="cognome">
+
+    <label>Età</label>
+    <input type="number" id="eta">
+
+    <button onclick="aggiungi()">Aggiungi persona</button>
     <button onclick="invia()">Invia dati</button>
 </div>
 
@@ -52,53 +61,66 @@ th, td {
 </div>
 
 <script>
-// leggo parametri URL
 let parametri = new URLSearchParams(window.location.search);
 let indici = parametri.get("indici");
 
-// ===== SE NON CI SONO PARAMETRI → MITTENTE =====
+// array globale
+let persone = [];
+
+// ===== MITTENTE =====
 if (indici == null) {
 
     document.getElementById("titolo").innerHTML = "Pagina Mittente";
 
+    function aggiungi() {
+
+        let nome = document.getElementById("nome").value;
+        let cognome = document.getElementById("cognome").value;
+        let eta = document.getElementById("eta").value;
+
+        let persona = {
+            nome: nome,
+            cognome: cognome,
+            eta: eta
+        };
+
+        persone.push(persona);
+
+        // pulizia campi
+        document.getElementById("nome").value = "";
+        document.getElementById("cognome").value = "";
+        document.getElementById("eta").value = "";
+    }
+
     function invia() {
 
-        // oggetto richiesto dalla consegna
-        let persone = [
-            { nome: "Gino", cognome: "Latilla", eta: 32 },
-            { nome: "Pino", cognome: "Rossi", eta: 42 }
-        ];
-
-        // salvo nel localStorage
+        // salvo array nel localStorage
         localStorage.setItem("persone", JSON.stringify(persone));
 
-        // creo indici 01, 02
+        // creo indici 01, 02, ...
         let listaIndici = "";
         for (let i = 0; i < persone.length; i++) {
             listaIndici += (i + 1).toString().padStart(2, "0") + ",";
         }
 
-        // tolgo ultima virgola
         listaIndici = listaIndici.slice(0, -1);
 
         // ricarico la pagina con parametri
         window.location.search = "?indici=" + listaIndici;
     }
 
-// ===== SE CI SONO PARAMETRI → DESTINATARIO =====
+// ===== DESTINATARIO =====
 } else {
 
     document.getElementById("titolo").innerHTML = "Pagina Destinatario";
     document.getElementById("mittente").style.display = "none";
     document.getElementById("destinatario").style.display = "block";
 
-    // recupero dati
     let persone = JSON.parse(localStorage.getItem("persone"));
     let arrayIndici = indici.split(",");
 
     let tabella = document.getElementById("tabella");
 
-    // stampa tabellare
     for (let i = 0; i < persone.length; i++) {
         tabella.innerHTML +=
             "<tr>" +
