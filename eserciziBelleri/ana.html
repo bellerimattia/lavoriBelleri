@@ -1,87 +1,120 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<title>Anagrafica 3.0</title>
+    <meta charset="UTF-8">
+    <title>Anagrafica 3.0 – Codice Unico</title>
 
-<style>
-body {
-    font-family: Arial;
-    background: #eee;
-    padding: 20px;
-}
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f2f4f7;
+            padding: 30px;
+        }
 
-table {
-    border-collapse: collapse;
-}
+        h1 {
+            margin-bottom: 20px;
+        }
 
-td, th {
-    border: 1px solid black;
-    padding: 6px;
-}
-</style>
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        table {
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+        }
+
+        th, td {
+            border: 1px solid #333;
+            padding: 8px 12px;
+            text-align: center;
+        }
+
+        th {
+            background: #ddd;
+        }
+    </style>
 </head>
-
 <body>
 
-<h2 id="titolo"></h2>
+<h1 id="titolo"></h1>
 
 <div id="mittente">
-    <button onclick="invia()">Invia dati</button>
+    <p>Invio dati anagrafici tramite <strong>localStorage</strong> e indici via <strong>URL</strong>.</p>
+    <button onclick="inviaDati()">Invia persone</button>
 </div>
 
-<div id="destinatario" style="display:none">
+<div id="destinatario" style="display:none;">
     <table>
-        <tr>
-            <th>Indice</th>
-            <th>Nome</th>
-            <th>Cognome</th>
-            <th>Età</th>
-        </tr>
+        <thead>
+            <tr>
+                <th>Indice</th>
+                <th>Nome</th>
+                <th>Cognome</th>
+                <th>Età</th>
+            </tr>
+        </thead>
         <tbody id="tabella"></tbody>
     </table>
 </div>
 
 <script>
-let parametri = new URLSearchParams(window.location.search);
-let indici = parametri.get("indici");
+    const params = new URLSearchParams(window.location.search);
+    const indiciURL = params.get("indici");
 
-if (indici == null) {
+    // SE NON CI SONO PARAMETRI → MITTENTE
+    if (!indiciURL) {
+        document.getElementById("titolo").innerText = "Pagina Mittente";
 
-    document.getElementById("titolo").innerHTML = "Pagina Mittente";
+        function inviaDati() {
 
-    function invia() {
+            const persone = [
+                { nome: "Gino", cognome: "Latilla", eta: 32 },
+                { nome: "Pino", cognome: "Rossi", eta: 42 }
+            ];
 
-        let persone = [
-            { nome: "Gino", cognome: "Latilla", eta: 32 },
-            { nome: "Pino", cognome: "Rossi", eta: 42 }
-        ];
+            // salvataggio localStorage
+            localStorage.setItem("persone", JSON.stringify(persone));
 
-        localStorage.setItem("persone", JSON.stringify(persone));
+            // creazione indici 01, 02
+            let indici = [];
+            for (let i = 0; i < persone.length; i++) {
+                indici.push(String(i + 1).padStart(2, "0"));
+            }
 
-        let listaIndici = "";
-        for (let i = 0; i < persone.length; i++) {
-            listaIndici += (i + 1).toString().padStart(2, "0") + ",";
+            // ricarico la stessa pagina con parametri
+            window.location.href = "anagrafica3_unico.html?indici=" + indici.join(",");
         }
-
-        listaIndici = listaIndici.slice(0, -1);
-
-        window.location.href = "anagrafica3.html?indici=" + listaIndici;
     }
 
-} else {
+    // SE CI SONO PARAMETRI → DESTINATARIO
+    else {
+        document.getElementById("titolo").innerText = "Pagina Destinatario";
+        document.getElementById("mittente").style.display = "none";
+        document.getElementById("destinatario").style.display = "block";
 
-    document.getElementById("titolo").innerHTML = "Pagina Destinatario";
-    document.getElementById("mittente").style.display = "none";
-    document.getElementById("destinatario").style.display = "block";
+        const persone = JSON.parse(localStorage.getItem("persone")) || [];
+        const indici = indiciURL.split(",");
 
-    let persone = JSON.parse(localStorage.getItem("persone"));
-    let arrayIndici = indici.split(",");
+        const tbody = document.getElementById("tabella");
 
-    let tabella = document.getElementById("tabella");
+        for (let i = 0; i < persone.length; i++) {
+            const tr = document.createElement("tr");
 
-    for (let i = 0; i < persone.length; i++) {
-        tabella.innerHTML +=
-            "<tr>" +
-            "<td>" + arrayIndici[i] + "</td>" +
-            "<td>" + persone[i].nome + "</td>" +
+            tr.innerHTML = `
+                <td>${indici[i]}</td>
+                <td>${persone[i].nome}</td>
+                <td>${persone[i].cognome}</td>
+                <td>${persone[i].eta}</td>
+            `;
+
+            tbody.appendChild(tr);
+        }
+    }
+</script>
+
+</body>
+</html>
