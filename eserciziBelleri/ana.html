@@ -11,6 +11,11 @@ body {
     padding: 20px;
 }
 
+input, button {
+    margin-top: 5px;
+    display: block;
+}
+
 table {
     border-collapse: collapse;
     margin-top: 20px;
@@ -27,10 +32,13 @@ th, td {
 
 <h2 id="titolo"></h2>
 
+<!-- ===== MITTENTE ===== -->
 <div id="mittente">
-    <button onclick="invia()">Invia persone</button>
+    <p>Inserimento multiplo (Anagrafica 3)</p>
+    <button onclick="invia()">Invia dati</button>
 </div>
 
+<!-- ===== DESTINATARIO ===== -->
 <div id="destinatario" style="display:none">
     <table>
         <tr>
@@ -44,44 +52,53 @@ th, td {
 </div>
 
 <script>
+// leggo parametri URL
 let parametri = new URLSearchParams(window.location.search);
 let indici = parametri.get("indici");
 
+// ===== SE NON CI SONO PARAMETRI → MITTENTE =====
 if (indici == null) {
 
     document.getElementById("titolo").innerHTML = "Pagina Mittente";
 
     function invia() {
 
+        // oggetto richiesto dalla consegna
         let persone = [
             { nome: "Gino", cognome: "Latilla", eta: 32 },
             { nome: "Pino", cognome: "Rossi", eta: 42 }
         ];
 
+        // salvo nel localStorage
         localStorage.setItem("persone", JSON.stringify(persone));
 
+        // creo indici 01, 02
         let listaIndici = "";
         for (let i = 0; i < persone.length; i++) {
             listaIndici += (i + 1).toString().padStart(2, "0") + ",";
         }
 
+        // tolgo ultima virgola
         listaIndici = listaIndici.slice(0, -1);
 
-        // ricarica la STESSA pagina con parametri
+        // ricarico la pagina con parametri
         window.location.search = "?indici=" + listaIndici;
     }
 
+// ===== SE CI SONO PARAMETRI → DESTINATARIO =====
 } else {
 
     document.getElementById("titolo").innerHTML = "Pagina Destinatario";
     document.getElementById("mittente").style.display = "none";
     document.getElementById("destinatario").style.display = "block";
 
+    // recupero dati
     let persone = JSON.parse(localStorage.getItem("persone"));
     let arrayIndici = indici.split(",");
 
     let tabella = document.getElementById("tabella");
 
+    // stampa tabellare
     for (let i = 0; i < persone.length; i++) {
         tabella.innerHTML +=
             "<tr>" +
