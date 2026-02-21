@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PWA Riconoscimento Immagini</title>
+
+<!-- Manifest inline -->
+<link rel="manifest" href="data:application/json,{
+  &quot;name&quot;:&quot;Image Recognition PWA&quot;,
+  &quot;short_name&quot;:&quot;ImageAI&quot;,
+  &quot;start_url&quot;:&quot;./&quot;,
+  &quot;display&quot;:&quot;standalone&quot;,
+  &quot;background_color&quot;:&quot;#ffffff&quot;,
+  &quot;theme_color&quot;:&quot;#2196f3&quot;
+}">
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  padding: 20px;
+}
+h1 { font-size: 24px; }
+img {
+  max-width: 90%;
+  margin-top: 20px;
+  border-radius: 12px;
+}
+button {
+  padding: 10px 20px;
+  font-size: 18px;
+  margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+<h1>🐶🐱 Riconoscimento Immagini PWA</h1>
+<p>Scatta o carica una foto e scopri cosa vede l’AI</p>
+
+<input type="file" accept="image/*" capture="environment" id="fileInput">
+<br>
+<img id="preview" />
+<h2 id="result">Risultato: ...</h2>
+
+<script>
+let model;
+const fileInput = document.getElementById("fileInput");
+const preview = document.getElementById("preview");
+const result = document.getElementById("result");
+
+// Carica modello MobileNet
+async function loadModel() {
+  model = await mobilenet.load();
+  result.innerText = "Modello caricato! 📦";
+}
+loadModel();
+
+// Riconoscimento immagine
+fileInput.addEventListener("change", async (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const imgURL = URL.createObjectURL(file);
+  preview.src = imgURL;
+
+  preview.onload = async () => {
+    const predictions = await model.classify(preview);
+    const top = predictions[0];
+    result.innerText =
+      `Risultato: ${top.className} (${(top.probability*100).toFixed(2)}%)`;
+  };
+});
+
+// Service Worker inline (per modalità PWA offline)
+if ("serviceWorker" in navigator) {
+  const swCode = `
+    const CACHE = "pwa-cache-v1";
+    self.addEventListener("install", e => {
+      e.waitUntil(
+        caches.open(CACHE).then(c => c.addAll(["./"]))
+      );
+    });
+    self.addEventListener("fetch", e => {
+      e.respondWith(
+        caches.match(e.request).then(r => r || fetch(e.request))
+      );
+    });
+  `;
+  const blob = new Blob([swCode], { type: "text/javascript" });
+  const swURL = URL.createObjectURL(blob);
+  navigator.serviceWorker.register(swURL);
+}
+</script>
+</body>
+</html>
