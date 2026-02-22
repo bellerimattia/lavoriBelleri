@@ -6,7 +6,7 @@
     <title>Modulo di Registrazione</title>
 
     <style>
-        /* Reset */
+        
         * {
             margin: 0;
             padding: 0;
@@ -121,18 +121,16 @@
 
     <script>
         function valida() {
-          // Variabili associate ai campi del modulo
+          
           const nome = document.invio.nome.value;
           const telefono = document.invio.telefono.value;
           const email = document.invio.email.value;
           const password = document.invio.password.value;
           const conferma = document.invio.conferma.value;
 
-          // Espressione regolare dell'email
           const email_reg_exp =
             /^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-]{2,})+.)+([a-zA-Z0-9]{2,})+$/;
 
-          // Espressione regolare della password
           const password_reg_exp = /^(?=.*[A-Z])(?=.*[@#$\-_?]).{6,}$/;
 
           if (!nome) {
