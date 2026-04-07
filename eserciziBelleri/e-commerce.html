@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>Mini E-commerce Base</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+<h1>Mini E-commerce Base</h1>
+
+<input type="file" id="fileInput"><br><br>
+<div id="prodotti"></div>
+
+<h3>Carrello</h3>
+<ul id="carrello"></ul>
+Totale: €<span id="totale">0</span><br><br>
+
+<h3>Registrazione</h3>
+Nome: <input type="text" id="nome"><br>
+Email: <input type="text" id="email"><br>
+<button onclick="registra()">Registrati</button><br><br>
+
+<button onclick="generaPDF()">Completa acquisto (PDF)</button>
+
+<script>
+// variabili globali
+var carrello = [];
+var totale = 0;
+var utente = {};
+
+// lettura CSV
+var fileInput = document.getElementById("fileInput");
+fileInput.onchange = function(event) {
+    var file = event.target.files[0];
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        var testo = e.target.result;
+        var righe = testo.split('\n');
+        var container = document.getElementById("prodotti");
+        container.innerHTML = '';
+        for (var i=1; i<righe.length; i++) {
+            if (righe[i] != '') {
+                var colonne = righe[i].split(',');
+                var nomeProd = colonne[1];
+                var descrizione = colonne[2];
+                var prezzo = colonne[3];
+                var div = document.createElement('div');
+                div.innerHTML = '<b>' + nomeProd + '</b><br>' + descrizione + '<br>Prezzo: €' + prezzo + '<br><button onclick="aggiungi(\'' + nomeProd + '\',' + prezzo + ')">Compra</button><br><br>';
+                container.appendChild(div);
+            }
+        }
+    };
+    reader.readAsText(file);
+};
+
+// aggiungi al carrello
+function aggiungi(nome, prezzo) {
+    var oggetto = {};
+    oggetto.nome = nome;
+    oggetto.prezzo = parseFloat(prezzo);
+    carrello.push(oggetto);
+    aggiornaCarrello();
+}
+
+// aggiorna carrello
+function aggiornaCarrello() {
+    var lista = document.getElementById('carrello');
+    lista.innerHTML = '';
+    totale = 0;
+    for (var i=0; i<carrello.length; i++) {
+        totale += carrello[i].prezzo;
+        var li = document.createElement('li');
+        li.innerHTML = carrello[i].nome + ' - €' + carrello[i].prezzo + ' <button onclick="rimuovi(' + i + ')">X</button>';
+        lista.appendChild(li);
+    }
+    document.getElementById('totale').innerHTML = totale;
+}
+
+function rimuovi(index) {
+    carrello.splice(index,1);
+    aggiornaCarrello();
+}
+
+// registrazione
+function registra() {
+    utente.nome = document.getElementById('nome').value;
+    utente.email = document.getElementById('email').value;
+    alert('Utente registrato: ' + utente.nome + ' (' + utente.email + ')');
+}
+
+// genera PDF
+function generaPDF() {
+    if (!utente.nome) {
+        alert('Registrati prima!');
+        return;
+    }
+    var doc = new window.jspdf.jsPDF();
+    doc.text('Riepilogo Ordine',10,10);
+    var y=20;
+    var totalePDF=0;
+    for (var i=0; i<carrello.length; i++) {
+        doc.text(carrello[i].nome + ' - €' + carrello[i].prezzo,10,y);
+        totalePDF += carrello[i].prezzo;
+        y+=10;
+    }
+    doc.text('Totale: €' + totalePDF,10,y+10);
+    doc.text('Cliente: ' + utente.nome,10,y+20);
+    doc.text('Email: ' + utente.email,10,y+30);
+    doc.save('ordine.pdf');
+}
+</script>
+
+</body>
+</html>
