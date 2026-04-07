@@ -24,12 +24,12 @@ Email: <input type="text" id="email"><br>
 <button onclick="generaPDF()">Completa acquisto (PDF)</button>
 
 <script>
-// variabili globali
+
 var carrello = [];
 var totale = 0;
 var utente = {};
 
-// lettura CSV
+
 var fileInput = document.getElementById("fileInput");
 fileInput.onchange = function(event) {
     var file = event.target.files[0];
@@ -54,7 +54,7 @@ fileInput.onchange = function(event) {
     reader.readAsText(file);
 };
 
-// aggiungi al carrello
+
 function aggiungi(nome, prezzo) {
     var oggetto = {};
     oggetto.nome = nome;
@@ -63,7 +63,7 @@ function aggiungi(nome, prezzo) {
     aggiornaCarrello();
 }
 
-// aggiorna carrello
+
 function aggiornaCarrello() {
     var lista = document.getElementById('carrello');
     lista.innerHTML = '';
@@ -82,14 +82,14 @@ function rimuovi(index) {
     aggiornaCarrello();
 }
 
-// registrazione
+
 function registra() {
     utente.nome = document.getElementById('nome').value;
     utente.email = document.getElementById('email').value;
     alert('Utente registrato: ' + utente.nome + ' (' + utente.email + ')');
 }
 
-// genera PDF
+
 function generaPDF() {
     if (!utente.nome) {
         alert('Registrati prima!');
