@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>dati covid</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        table {
+            border-collapse: collapse;
+            background-color: white;
+        }
+
+        th, td {
+            border: 1px solid #999;
+            padding: 6px 10px;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        th {
+            background-color: #4a7ab5;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #e9eef5;
+        }
+    </style>
+</head>
+<body>
+    <h1>Andamento COVID-19 in Italia</h1>
+    <p>Dati presi dal sito della Protezione Civile</p>
+
+    <table id="tabella">
+    </table>
+
+    <script>
+        fetch("https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-andamento-nazionale.json")
+            .then(r => r.json())
+            .then(dati => {
+                const tabella = document.getElementById("tabella");
+                const intestazione = document.createElement("tr");
+                Object.keys(dati[0]).forEach(chiave => {
+                    const th = document.createElement("th");
+                    th.textContent = chiave;
+                    intestazione.appendChild(th);
+                });
+                tabella.appendChild(intestazione);
+                dati.forEach(oggetto => {
+                    const riga = document.createElement("tr");
+                    Object.values(oggetto).forEach(valore => {
+                        const cella = document.createElement("td");
+                        cella.textContent = valore;
+                        riga.appendChild(cella);
+                    });
+                    tabella.appendChild(riga);
+                });
+            });
+    </script>
+</body>
+</html>
