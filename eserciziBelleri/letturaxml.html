@@ -2,18 +2,141 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Anagrafica classe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Kalam:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
-table, th, td {
-  border: 1px solid black;
+:root {
+  --carta: #fbfaf4;
+  --quadretto: #d6e4f2;
+  --margine: #e0574f;
+  --inchiostro: #1f3d8f;
+  --matita: #4a4a4a;
+  --evidenziatore: #fff07a;
+  --ombra: rgba(60, 50, 20, 0.18);
+  color-scheme: light;
+}
+
+/* Di sera il quaderno diventa una lavagna */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --carta: #24382e;
+    --quadretto: rgba(255, 255, 255, 0.035);
+    --margine: rgba(255, 255, 255, 0.18);
+    --inchiostro: #f3efe3;
+    --matita: #c9d2c4;
+    --evidenziatore: rgba(255, 226, 120, 0.35);
+    --ombra: rgba(0, 0, 0, 0.45);
+    color-scheme: dark;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--carta);
+  background-image:
+    linear-gradient(var(--quadretto) 1px, transparent 1px),
+    linear-gradient(90deg, var(--quadretto) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--inchiostro);
+  font-family: "Kalam", "Comic Sans MS", cursive;
+  padding: 48px 24px 64px 96px;
+}
+
+/* La riga rossa del margine */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 64px;
+  width: 2px;
+  background: var(--margine);
+}
+
+h1 {
+  font-family: "Caveat", "Comic Sans MS", cursive;
+  font-weight: 700;
+  font-size: clamp(2.8rem, 7vw, 4.4rem);
+  line-height: 1;
+  margin: 0 0 40px;
+  transform: rotate(-1.5deg);
+  transform-origin: left;
+}
+
+/* Il paragrafo dove compare la tabella */
+#demo {
+  max-width: 640px;
+  margin: 0;
+  overflow-x: auto;
+  font-size: 1.2rem;
+  color: var(--matita);
+}
+
+table {
   border-collapse: collapse;
+  width: 100%;
+  color: var(--inchiostro);
 }
-th, td {
-  padding: 4px 8px;
-  text-align: left;
-}
+
 th {
-  background-color: #dddddd;
+  font-family: "Caveat", cursive;
+  font-weight: 700;
+  font-size: 1.8rem;
+  text-align: left;
+  padding: 0 18px 6px 4px;
+  white-space: nowrap;
+  background-image: linear-gradient(transparent 55%, var(--evidenziatore) 55%, var(--evidenziatore) 90%, transparent 90%);
+}
+
+td {
+  padding: 8px 18px 8px 4px;
+  border-bottom: 1px solid var(--quadretto);
+  white-space: nowrap;
+  text-transform: capitalize;
+}
+
+@media (prefers-color-scheme: dark) {
+  td {
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
+  }
+}
+
+tr:not(:first-child):hover td {
+  background: var(--evidenziatore);
+}
+
+/* Il numero cerchiato a penna */
+td:first-child {
+  width: 1%;
+  font-family: "Caveat", cursive;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--margine);
+  text-align: center;
+}
+
+@media (prefers-color-scheme: dark) {
+  td:first-child {
+    color: var(--inchiostro);
+    opacity: 0.6;
+  }
+}
+
+@media (max-width: 560px) {
+  body {
+    padding: 32px 16px 48px 60px;
+  }
+  body::before {
+    left: 40px;
+  }
 }
 </style>
 </head>
