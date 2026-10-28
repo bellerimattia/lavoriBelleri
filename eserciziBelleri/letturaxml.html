@@ -113,7 +113,7 @@ tr:not(:first-child):hover td {
   background: var(--evidenziatore);
 }
 
-/* Il numero cerchiato a penna */
+/* Il numero scritto a penna rossa */
 td:first-child {
   width: 1%;
   font-family: "Caveat", cursive;
@@ -148,8 +148,8 @@ td:first-child {
 <script>
 var xmlhttp = new XMLHttpRequest();
 
-xmlhttp.onreadystatechange = function() {
-  if (this.readyState == 4 && this.status == 200) {
+xmlhttp.onload = function() {
+  if (this.status == 200) {
     var xmlDoc = this.responseXML;
     var utenti = xmlDoc.getElementsByTagName("utente");
     var txt = "";
