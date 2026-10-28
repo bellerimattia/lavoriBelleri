@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>Anagrafica classe</title>
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 4px 8px;
+  text-align: left;
+}
+th {
+  background-color: #dddddd;
+}
+</style>
+</head>
+<body>
+
+<h1>Anagrafica classe</h1>
+<p id="demo">Caricamento...</p>
+
+<script>
+var xmlhttp = new XMLHttpRequest();
+
+xmlhttp.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+    var xmlDoc = this.responseXML;
+    var utenti = xmlDoc.getElementsByTagName("utente");
+    var txt = "";
+    var i;
+
+    txt += "<table>";
+    txt += "<tr>";
+    txt += "<th>N.</th>";
+    txt += "<th>Nome</th>";
+    txt += "<th>Cognome</th>";
+    txt += "</tr>";
+
+    for (i = 0; i < utenti.length; i++) {
+      txt += "<tr>";
+      txt += "<td>" + (i + 1) + "</td>";
+      txt += "<td>" + utenti[i].getElementsByTagName("nome")[0].childNodes[0].nodeValue + "</td>";
+      txt += "<td>" + utenti[i].getElementsByTagName("cognome")[0].childNodes[0].nodeValue + "</td>";
+      txt += "</tr>";
+    }
+
+    txt += "</table>";
+    document.getElementById("demo").innerHTML = txt;
+  }
+};
+
+xmlhttp.open("GET", "https://ppetrozzi.github.io/lavori/xml/nomi.xml", true);
+xmlhttp.send();
+</script>
+
+</body>
+</html>
